@@ -6,26 +6,26 @@ st.set_page_config(page_title="Tienda Mica", layout="wide")
 # --- CABECERA CON LOGO ---
 col_logo, col_espacio = st.columns([1, 8])
 with col_logo:
-    # Este es tu logo
+    # Logo de ejemplo (podés cambiar el URL)
     st.image("https://cdn-icons-png.flaticon.com/512/3081/3081559.png", width=80) 
 
-# 2. Estilo CSS (Actualizado para imágenes)
+# 2. Estilo CSS
 st.markdown("""
     <style>
     .stApp { background-color: #001f3f; color: white; }
     .producto-card {
-        background-color: white; /* Cambiamos a blanco para que resalten las prendas */
+        background-color: white;
         padding: 15px;
         border-radius: 12px;
         text-align: center;
         margin-bottom: 20px;
-        color: #333; /* Texto oscuro para leer sobre blanco */
+        color: #333;
     }
     .producto-card h3, .producto-card p { color: #333 !important; margin: 5px 0; }
     .img-producto {
         width: 100%;
         height: 200px;
-        object-fit: cover; /* Esto hace que la imagen no se deforme */
+        object-fit: cover;
         border-radius: 8px;
     }
     .stButton>button { background-color: #ff4b4b; color: white; border-radius: 8px; }
@@ -36,8 +36,7 @@ st.markdown("""
 if 'carrito' not in st.session_state:
     st.session_state.carrito = []
 
-# 4. Datos de los productos (CON LINKS DE IMÁGENES)
-# Podés reemplazar estos links por los de tus propias fotos
+# 4. Datos de los productos (LISTA CORREGIDA)
 productos = [
     {
         "id": 1, 
@@ -68,7 +67,6 @@ with col_tienda:
     cols = st.columns(3)
     for i, producto in enumerate(productos):
         with cols[i]:
-            # Mostramos la tarjeta con la imagen
             st.markdown(f"""
                 <div class="producto-card">
                     <img src="{producto['url']}" class="img-producto">
@@ -77,11 +75,11 @@ with col_tienda:
                 </div>
             """, unsafe_allow_html=True)
             
-            if st.button(f"Añadir al carrito", key=f"btn_{producto['id']}"):
+            if st.button(f"Añadir {producto['nombre']}", key=f"btn_{producto['id']}"):
                 st.session_state.carrito.append(producto)
                 st.toast(f"✅ {producto['nombre']} añadido")
 
-# 6. Carrito (Barra lateral derecha)
+# 6. Carrito
 with col_carrito:
     st.subheader("🛒 Tu Carrito")
     if not st.session_state.carrito:
@@ -96,7 +94,9 @@ with col_carrito:
         st.header(f"Total: ${total}")
         
         if st.button("Vaciar"):
-            st.
+            st.session_state.carrito = []
+            st.rerun()
+
 
 
 
