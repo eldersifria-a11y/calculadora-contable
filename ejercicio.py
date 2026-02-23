@@ -145,4 +145,10 @@ with col_carrito:
             with placeholder:
                 # Mostramos el loader de Uiverse
                 st.markdown("""
-                <div class="loader">      
+                <div class="loader">
+                    <div class="loading-text">Procesando Pago<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+                    <div class="loading-bar-background"><div class="loading-bar"></div></div>
+                </div>""", unsafe_allow_html=True)
+                time.sleep(4)
+            placeholder.empty()
+            st.success("¡Pedido realizado con éxito!")
