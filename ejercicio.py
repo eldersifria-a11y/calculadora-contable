@@ -3,77 +3,100 @@ import streamlit as st
 # 1. Configuración de la página
 st.set_page_config(page_title="Tienda Mica", layout="wide")
 
-# Estilo para que se vea profesional (Azul Marino)
+# --- CABECERA CON LOGO ---
+col_logo, col_espacio = st.columns([1, 8])
+with col_logo:
+    # Este es tu logo
+    st.image("https://cdn-icons-png.flaticon.com/512/3081/3081559.png", width=80) 
+
+# 2. Estilo CSS (Actualizado para imágenes)
 st.markdown("""
     <style>
     .stApp { background-color: #001f3f; color: white; }
     .producto-card {
-        background-color: #003366;
-        padding: 20px;
-        border-radius: 15px;
-        border: 1px solid #00509d;
+        background-color: white; /* Cambiamos a blanco para que resalten las prendas */
+        padding: 15px;
+        border-radius: 12px;
         text-align: center;
         margin-bottom: 20px;
+        color: #333; /* Texto oscuro para leer sobre blanco */
     }
-    h1, h2, h3, p { color: white !important; }
-    .stButton>button { background-color: #ff4b4b; color: white; width: 100%; border-radius: 8px; }
+    .producto-card h3, .producto-card p { color: #333 !important; margin: 5px 0; }
+    .img-producto {
+        width: 100%;
+        height: 200px;
+        object-fit: cover; /* Esto hace que la imagen no se deforme */
+        border-radius: 8px;
+    }
+    .stButton>button { background-color: #ff4b4b; color: white; border-radius: 8px; }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Inicializar el Carrito en la memoria (Session State)
+# 3. Inicializar el Carrito
 if 'carrito' not in st.session_state:
     st.session_state.carrito = []
 
-# 3. Datos de los productos (Podés cambiar los nombres y precios)
+# 4. Datos de los productos (CON LINKS DE IMÁGENES)
+# Podés reemplazar estos links por los de tus propias fotos
 productos = [
-    {"id": 1, "nombre": "Pantalones", "precio": 50.0,50, "imag:"👖"with st.sidebar:
-    {"id": 2, "nombre": "Remeras", "precio": 120.0, "img": "👕"},
-    {"id": 3, "nombre": "Buzos", "precio": 25.0, "img": "🧥"}
+    {
+        "id": 1, 
+        "nombre": "Pantalón Jean", 
+        "precio": 50.0, 
+        "url": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500"
+    },
+    {
+        "id": 2, 
+        "nombre": "Remera Algodón", 
+        "precio": 120.0, 
+        "url": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500"
+    },
+    {
+        "id": 3, 
+        "nombre": "Buzo con Capucha", 
+        "precio": 25.0, 
+        "url": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500"
+    }
 ]
 
 st.title("🛍️ Mi Tienda MiCA")
-st.write("Seleccioná los productos que desees contratar.")
 
-# 4. Layout de la Tienda (3 columnas para los productos)
+# 5. Layout de la Tienda
 col_tienda, col_carrito = st.columns([2, 1])
 
 with col_tienda:
     cols = st.columns(3)
     for i, producto in enumerate(productos):
         with cols[i]:
+            # Mostramos la tarjeta con la imagen
             st.markdown(f"""
                 <div class="producto-card">
-                    <div style="font-size: 50px;">{producto['img']}</div>
+                    <img src="{producto['url']}" class="img-producto">
                     <h3>{producto['nombre']}</h3>
-                    <p>Precio: <b>USD {producto['precio']}</b></p>
+                    <p><b>USD {producto['precio']}</b></p>
                 </div>
             """, unsafe_allow_html=True)
             
-            if st.button(f"Añadir {producto['nombre']}", key=f"btn_{producto['id']}"):
+            if st.button(f"Añadir al carrito", key=f"btn_{producto['id']}"):
                 st.session_state.carrito.append(producto)
                 st.toast(f"✅ {producto['nombre']} añadido")
 
-# 5. Barra Lateral / Columna Derecha: El Carrito
+# 6. Carrito (Barra lateral derecha)
 with col_carrito:
     st.subheader("🛒 Tu Carrito")
     if not st.session_state.carrito:
-        st.write("El carrito está vacío.")
+        st.write("Está vacío.")
     else:
         total = 0
         for item in st.session_state.carrito:
-            st.write(f"- {item['nombre']}: **USD {item['precio']}**")
+            st.write(f"• {item['nombre']} - ${item['precio']}")
             total += item['precio']
         
         st.divider()
-        st.header(f"Total: USD {total}")
+        st.header(f"Total: ${total}")
         
-        if st.button("Vaciar Carrito"):
-            st.session_state.carrito = []
-            st.rerun()
-            
-        if st.button("🔥 Finalizar Compra"):
-            st.success("¡Pedido enviado! Redirigiendo a pago...")
-            # Aquí es donde en el futuro pondríamos el link de Mercado Pago o PayPal
+        if st.button("Vaciar"):
+            st.
 
 
 
