@@ -1,7 +1,7 @@
 import streamlit as st
 
 # 1. Configuración de la página
-st.set_page_config(page_title="Mi Tienda Online", layout="wide")
+st.set_page_config(page_title="Tienda Mica", layout="wide")
 
 # Estilo para que se vea profesional (Azul Marino)
 st.markdown("""
@@ -74,5 +74,6 @@ with col_carrito:
         if st.button("🔥 Finalizar Compra"):
             st.success("¡Pedido enviado! Redirigiendo a pago...")
             # Aquí es donde en el futuro pondríamos el link de Mercado Pago o PayPal
+
 
 
