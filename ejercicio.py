@@ -1,7 +1,7 @@
 import streamlit as st
 
 # 1. Configuración de la página
-st.set_page_config(page_title="Tienda Mica", layout="wide")
+st.set_page_config(page_title="Tienda jony", layout="wide")
 
 # --- CABECERA CON LOGO ---
 col_logo, col_espacio = st.columns([1, 8])
@@ -96,6 +96,7 @@ with col_carrito:
         if st.button("Vaciar"):
             st.session_state.carrito = []
             st.rerun()
+
 
 
 
