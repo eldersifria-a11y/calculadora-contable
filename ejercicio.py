@@ -26,7 +26,7 @@ if 'carrito' not in st.session_state:
 
 # 3. Datos de los productos (Podés cambiar los nombres y precios)
 productos = [
-    {"id": 1, "nombre": "Pantalones", "precio": 50.0,50,"imag:"👖"with st.sidebar:
+    {"id": 1, "nombre": "Pantalones", "precio": 50.0,50, "imag:"👖"with st.sidebar:
     {"id": 2, "nombre": "Remeras", "precio": 120.0, "img": "👕"},
     {"id": 3, "nombre": "Buzos", "precio": 25.0, "img": "🧥"}
 ]
@@ -74,6 +74,7 @@ with col_carrito:
         if st.button("🔥 Finalizar Compra"):
             st.success("¡Pedido enviado! Redirigiendo a pago...")
             # Aquí es donde en el futuro pondríamos el link de Mercado Pago o PayPal
+
 
 
 
