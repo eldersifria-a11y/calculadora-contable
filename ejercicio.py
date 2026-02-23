@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # 1. Configuración de la página (DEBE IR PRIMERO)
-st.set_page_config(page_title="Gestión Contable Pro", layout="wide")
+st.set_page_config(page_title="Teoria Contable", layout="wide")
 
 # 2. Estilo CSS para el Azul Marino
 st.markdown("""
@@ -42,3 +42,4 @@ df = pd.DataFrame({
     "Ventas": [v_enero, v_feb, v_mar, v_abr]
 })
 st.bar_chart(df.set_index("Mes"))
+
