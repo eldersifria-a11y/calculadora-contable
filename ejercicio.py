@@ -26,7 +26,10 @@ if 'carrito' not in st.session_state:
 
 # 3. Datos de los productos (Podés cambiar los nombres y precios)
 productos = [
-    {"id": 1, "nombre": "Pantalones", "precio": 50.0, st.image("https://img.ltwebstatic.com/images3_pi/2023/11/03/ef/16989857583c4f93da497350bcfd4a02ff580355db_thumbnail_900x.jpg"): ""},
+    {"id": 1, "nombre": "Pantalones", "precio": 50.0,with st.sidebar:
+    st.image("https://img.ltwebstatic.com/images3_pi/2023/11/03/ef/16989857583c4f93da497350bcfd4a02ff580355db_thumbnail_900x.jpg", width=100)
+    st.title("Navegación")
+    st.write("Bienvenido a mi sistema."): ""},
     {"id": 2, "nombre": "Remeras", "precio": 120.0, "img": "📊"},
     {"id": 3, "nombre": "Buzos", "precio": 25.0, "img": "📑"}
 ]
@@ -74,6 +77,7 @@ with col_carrito:
         if st.button("🔥 Finalizar Compra"):
             st.success("¡Pedido enviado! Redirigiendo a pago...")
             # Aquí es donde en el futuro pondríamos el link de Mercado Pago o PayPal
+
 
 
 
