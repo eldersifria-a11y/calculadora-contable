@@ -31,7 +31,7 @@ productos = [
     {"id": 3, "nombre": "Plantilla Excel Plus", "precio": 25.0, "img": "📑"}
 ]
 
-st.title("🛍️ Mi Tienda de Servicios Digitales")
+st.title("🛍️ Mi Tienda MiCA")
 st.write("Seleccioná los productos que desees contratar.")
 
 # 4. Layout de la Tienda (3 columnas para los productos)
@@ -74,6 +74,7 @@ with col_carrito:
         if st.button("🔥 Finalizar Compra"):
             st.success("¡Pedido enviado! Redirigiendo a pago...")
             # Aquí es donde en el futuro pondríamos el link de Mercado Pago o PayPal
+
 
 
 
