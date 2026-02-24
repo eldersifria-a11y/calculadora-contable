@@ -1,140 +1,114 @@
 import streamlit as st
 import pandas as pd
-import sqlite3
 import time
 from datetime import datetime
 
-# --- 1. CAPA DE SERVICIOS (Lógica de Negocio) ---
+# --- CONFIGURACIÓN DE MARCA ---
+NOMBRE_APP = "MonoTax"
+ESLOGAN = "Sellar el trato nunca fue tan fácil."
+# Imagen representativa (Monos dándose la mano)
+LOGO_URL = "https://img.icons8.com/external-flat-icons-invisisteve/512/external-Handshake-shaking-hands-flat-icons-invisisteve.png" 
 
-def logic_emitir_factura(monto, cuit_cliente, modo_test=True):
-    """
-    Aquí es donde se integra PyAfipWs o Zeep.
-    Por ahora simulamos la respuesta de ARCA.
-    """
-    if modo_test:
-        time.sleep(2) # Simula latencia de red
-        return {
-            "cae": "76123456789012",
-            "vto": "2026-03-05",
-            "nro": "0001-00000042",
-            "status": "success"
-        }
-    else:
-        # Aquí iría el código de la sección anterior (WSAA + WSFE)
-        # return call_arca_webservice(monto, cuit_cliente)
-        pass
+st.set_page_config(page_title=NOMBRE_APP, layout="wide", page_icon="🐒")
 
-# --- 2. CONFIGURACIÓN DE INTERFAZ ---
-st.set_page_config(page_title="Contador IA Pro", layout="wide", page_icon="📈")
-
-# Estilo personalizado para el Dashboard
-st.markdown("""
+# --- ESTILO VISUAL MONOTAX ---
+st.markdown(f"""
     <style>
-    .main { background-color: #f5f7f9; }
-    .stMetric { background-color: #ffffff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .main {{ background-color: #fcfaf7; }}
+    .stMetric {{ background-color: #ffffff; border-left: 5px solid #8d6e63; border-radius: 8px; }}
+    div.stButton > button:first-child {{
+        background-color: #5d4037;
+        color: white;
+        border-radius: 10px;
+        font-weight: bold;
+    }}
+    .sidebar-text {{ color: #ffffff; font-size: 0.9em; }}
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. ESTADO DE SESIÓN ---
-if 'facturas' not in st.session_state:
-    st.session_state.facturas = []
-
-# --- 4. BARRA LATERAL (MENÚ) ---
+# --- BARRA LATERAL (SIDEBAR) ---
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/2643/2643533.png", width=100)
-    st.title("Contador IA")
-    menu = st.radio("Menú Principal", 
-                   ["Dashboard", "Facturador Real", "Sincronizar Apps", "Asesor IA"])
+    st.image(LOGO_URL, width=120)
+    st.title(NOMBRE_APP)
+    st.write(f"*{ESLOGAN}*")
     st.divider()
-    st.caption("v1.0.0 - Conectado a ARCA (Modo Test)")
-
-# --- 5. MÓDULOS PRINCIPALES ---
-
-if menu == "Dashboard":
-    st.header("📊 Panel de Control")
     
-    # Métricas dinámicas
-    total_ventas = sum([f['monto'] for f in st.session_state.facturas])
+    menu = st.radio("MENÚ PRINCIPAL", [
+        "📊 Mi Estado (Dashboard)", 
+        "🤝 Sellar Trato (Facturar)", 
+        "🚗 Mis Plataformas (Uber/Rappi)", 
+        "💬 Consultorio MonoTax (IA)"
+    ])
     
+    st.divider()
+    # SECCIÓN DE SEGURIDAD
+    with st.expander("🔐 Seguridad MonoTax"):
+        st.caption("Tus datos fiscales se encriptan bajo protocolo bancario AES-256. No almacenamos tu clave fiscal, solo la usamos para 'el trato' con ARCA.")
+
+# --- LÓGICA DE DATOS ---
+if 'ingresos' not in st.session_state:
+    st.session_state.ingresos = 450000.0  # Dato inicial de ejemplo
+
+# --- MÓDULOS DE LA APP ---
+
+if menu == "📊 Mi Estado (Dashboard)":
+    st.header(f"Bienvenido, Mono 🐒")
+    st.subheader("Tu salud fiscal hoy")
+
     col1, col2, col3 = st.columns(3)
-    col1.metric("Ingresos Mes", f"$ {total_ventas:,.2f}", "+15%")
-    col2.metric("Gastos (OCR)", "$ 120.400", "-2%")
-    col3.metric("Límite Cat. A", f"{ (total_ventas/1200000)*100 :.1f}%")
+    with col1:
+        st.metric("Ventas Acumuladas", f"$ {st.session_state.ingresos:,.2f}")
+    with col2:
+        limite = 1200000
+        disponible = limite - st.session_state.ingresos
+        st.metric("Margen Cat. A", f"$ {disponible:,.2f}")
+    with col3:
+        st.metric("Próximo Vencimiento", "20/03")
 
-    # Gráfico de ventas
-    if st.session_state.facturas:
-        df = pd.DataFrame(st.session_state.facturas)
-        st.line_chart(df.set_index('fecha')['monto'])
-    else:
-        st.info("Aún no hay facturas emitidas este mes.")
+    # Gráfico de progreso de categoría
+    st.write("### Progreso de Categoría")
+    progreso = st.session_state.ingresos / limite
+    st.progress(progreso)
+    st.caption(f"Estás al {progreso*100:.1f}% del límite de la Categoría A.")
 
-elif menu == "Facturador Real":
-    st.header("📄 Emisión de Factura Electrónica")
+elif menu == "🤝 Sellar Trato (Facturar)":
+    st.header("Emitir Factura Electrónica")
+    st.write("Completá los datos para que el robot de **MonoTax** selle el trato con ARCA.")
     
-    with st.container():
-        col_a, col_b = st.columns(2)
-        with col_a:
-            cuit = st.text_input("CUIT del Cliente", placeholder="20-XXXXXXXX-9")
-            monto = st.number_input("Monto Total ($)", min_value=0.0, step=100.0)
-        with col_b:
-            concepto = st.selectbox("Concepto", ["Servicios", "Productos", "Varios"])
-            punto_vta = st.number_input("Punto de Venta", value=1)
-
-    if st.button("🚀 Generar Factura con CAE"):
-        if monto > 0 and cuit:
-            with st.status("Conectando con servidores de ARCA...", expanded=True) as status:
-                st.write("🔐 Solicitando Token de acceso (WSAA)...")
-                # Aquí llamamos a la lógica real
-                res = logic_emitir_factura(monto, cuit)
-                
-                st.write(f"📡 Enviando Comprobante {res['nro']}...")
-                time.sleep(1)
-                status.update(label="✅ ¡Factura Autorizada!", state="complete")
-            
-            # Guardamos en el historial del Dashboard
-            nueva_fact = {
-                "fecha": datetime.now().strftime("%Y-%m-%d %H:%M"),
-                "monto": monto,
-                "cae": res['cae'],
-                "nro": res['nro']
-            }
-            st.session_state.facturas.append(nueva_fact)
-            
-            st.success(f"Comprobante aceptado. CAE: {res['cae']}")
-            st.download_button("Descargar PDF", "Contenido del PDF simulado", f"factura_{res['nro']}.pdf")
-        else:
-            st.error("Por favor completá los datos del cliente y el monto.")
-
-elif menu == "Sincronizar Apps":
-    st.header("🚗 Integración Gig-Economy")
-    st.write("Conectá con tus plataformas de trabajo.")
-    
-    col_u, col_r, col_p = st.columns(3)
-    with col_u:
-        if st.button("Sincronizar Uber"):
-            st.toast("Buscando viajes recientes...")
-            time.sleep(2)
-            st.success("Detectado: $45.200")
-    with col_r:
-        st.button("Sincronizar Rappi")
-    with col_p:
-        st.button("Sincronizar PedidosYa")
-
-elif menu == "Asesor IA":
-    st.header("💬 Chat Asesor Fiscal")
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-
-    for m in st.session_state.chat_history:
-        with st.chat_message(m["role"]):
-            st.markdown(m["content"])
-
-    if prompt := st.chat_input("¿Cuánto puedo facturar hoy?"):
-        st.session_state.chat_history.append({"role": "user", "content": prompt})
-        with st.chat_message("user"): st.markdown(prompt)
+    with st.form("form_factura"):
+        cuit_cli = st.text_input("CUIT Cliente", placeholder="20123456789")
+        monto_fact = st.number_input("Monto total del servicio", min_value=0.0)
+        detalle = st.text_area("Concepto (Ej: Servicios de transporte)")
+        enviar = st.form_submit_button("🤝 SELLAR TRATO")
         
-        with st.chat_message("assistant"):
-            # Aquí conectarías con la lógica de tu base de datos
-            resp = f"Analizando tus {len(st.session_state.facturas)} facturas de este mes... Podés facturar hasta ${1200000 - total_ventas:,.2f} antes de recategorizarte."
-            st.markdown(resp)
-            st.session_state.chat_history.append({"role": "assistant", "content": resp})
+        if enviar:
+            with st.spinner("Los monos están gestionando tu CAE..."):
+                time.sleep(2) # Simulación de robot
+                st.session_state.ingresos += monto_fact
+                st.success(f"¡Hecho! Factura emitida. Tu margen se actualizó en el Dashboard.")
+                st.balloons()
+
+elif menu == "🚗 Mis Plataformas (Uber/Rappi)":
+    st.header("Sincronización Automática")
+    st.write("Conectá tus cuentas para que **MonoTax** facture tus ganancias por vos.")
+    
+    col_u, col_r = st.columns(2)
+    with col_u:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png", width=100)
+        if st.button("Vincular Uber"):
+            st.info("Iniciando robot extractor...")
+    with col_r:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/0/06/Rappi_logo.svg", width=100)
+        if st.button("Vincular Rappi"):
+            st.info("Iniciando robot extractor...")
+
+elif menu == "💬 Consultorio MonoTax (IA)":
+    st.header("Asesoría Instantánea")
+    st.write("Preguntale a la IA lo que necesites sobre impuestos.")
+    
+    pregunta = st.chat_input("Ej: ¿Qué pasa si me paso de categoría?")
+    if pregunta:
+        with st.chat_message("assistant", avatar="🐒"):
+            st.write(f"Analizando para tu caso particular... Respecto a '{pregunta}', mi consejo es que...")
+            st.info("Recordá que como estás en CABA, tu IIBB ya está unificado en el mismo pago.")
+
